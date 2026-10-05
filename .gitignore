@@ -1,0 +1,16 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Bouncer working data (client ICPs, scraped sites, results)
+cache/
+output/
+clients/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.DS_Store
