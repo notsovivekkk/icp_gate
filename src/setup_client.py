@@ -14,8 +14,7 @@ from pathlib import Path
 
 import anthropic
 
-import jev
-import web
+from . import ROOT, jev, web
 
 CLAUDE_MODEL = "claude-opus-5-5"
 
@@ -127,7 +126,7 @@ def to_gate(client, domain, draft, icp_from_doc):
             "false_when": draft["false_when"],
         },
         # Probability >= yes -> "Y", <= no -> "N", anything between -> "Review".
-        "thresholds": {"yes": 0.8, "no": 0.3},
+        "thresholds": {"yes": 0.7, "no": 0.3},
         "model": jev.MODEL,
     }
 
@@ -164,10 +163,10 @@ def edit_in_editor(gate):
 
 def save(client, gate):
     gate["approved_at"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
-    path = Path("clients") / client / "gate.json"
+    path = ROOT / "clients" / client / "gate.json"
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(gate, indent=2, ensure_ascii=False) + "\n")
-    print("\nSaved %s. Next: python bouncer.py run %s <list.csv>" % (path, client))
+    print("\nSaved %s. Next: python bouncer.py run %s <list.csv>" % (path.relative_to(ROOT), client))
 
 
 def read_icp_doc(path):

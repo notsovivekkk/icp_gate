@@ -1,0 +1,17 @@
+{
+  "client": "example",
+  "client_name": "Example Co",
+  "site": "example.com",
+  "icp_source": "website",
+  "icp_summary": "Example Co sells scheduling software to independent dental and physiotherapy clinics. Buyers are clinic owners or practice managers at single-location or small multi-location practices that book patient appointments themselves. Website signals: online booking pages, a list of treatments, practitioner bios, and one to ten locations. Not a fit: hospitals and large health systems, dental labs and suppliers, healthcare software companies (competitors), insurers, consultants, agencies, and job seekers.",
+  "question": {
+    "instructions": "Is this prospect a direct fit for Example Co's ideal customer?",
+    "true_when": "The prospect is an independent dental or physiotherapy clinic, or a small group of up to ten clinics, that treats patients and books appointments directly.",
+    "false_when": "The prospect is a hospital or large health system, a lab, supplier, insurer, consultant, agency, or a software company selling to clinics rather than a clinic itself."
+  },
+  "thresholds": {
+    "yes": 0.7,
+    "no": 0.3
+  },
+  "model": "typesafe/jev-1.13"
+}

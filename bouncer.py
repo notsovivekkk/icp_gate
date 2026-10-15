@@ -41,10 +41,10 @@ def main():
 
     args = parser.parse_args()
     if args.command == "setup":
-        from setup_client import run_setup
+        from src.setup_client import run_setup
         run_setup(args.client, args.site, args.icp)
     else:
-        from run_list import run_list
+        from src.run_list import run_list
         run_list(args.client, args.csv, args.limit, args.domain_col, args.name_col, args.workers)
 
 

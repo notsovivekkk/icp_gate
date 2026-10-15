@@ -9,7 +9,9 @@ from urllib.parse import urljoin, urlparse
 import requests
 from bs4 import BeautifulSoup
 
-CACHE_DIR = Path("cache/sites")
+from . import ROOT
+
+CACHE_DIR = ROOT / "cache" / "sites"
 TIMEOUT = 15
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (compatible; Bouncer/1.0; +https://github.com/)",

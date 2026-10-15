@@ -46,7 +46,7 @@ ANTHROPIC_API_KEY=sk-ant-...
 
 ```bash
 python bouncer.py setup acme --site acme.com
-python bouncer.py setup acme --site acme.com --icp docs/acme_icp.md   # if you have an ICP doc (.md, .txt, .pdf)
+python bouncer.py setup acme --site acme.com --icp inputs/acme_icp.md # if you have an ICP doc (.md, .txt, .pdf)
 ```
 
 Bouncer shows you the draft:
@@ -66,7 +66,7 @@ Is this prospect a direct fit for Acme's ideal customer?
   TRUE when:  The prospect sells its own software product to businesses ...
   FALSE when: The prospect is a services firm, agency, reseller, ...
 
-  Thresholds: Y ≥ 0.8 · N ≤ 0.3 · Review in between
+  Thresholds: Y ≥ 0.7 · N ≤ 0.3 · Review in between
 
 [a]pprove and save · [e]dit in your editor · [r]egenerate with feedback · [q]uit:
 ```
@@ -80,9 +80,9 @@ You can edit `clients/acme/gate.json` by hand later. The `thresholds` block sets
 ## Command 2: gate a list
 
 ```bash
-python bouncer.py run acme leads.csv --limit 20        # try 20 rows first
-python bouncer.py run acme leads.csv                   # the whole list
-python bouncer.py run acme leads.csv --domain-col "Company Website" --name-col "Account"
+python bouncer.py run acme inputs/leads.csv --limit 20 # try 20 rows first
+python bouncer.py run acme inputs/leads.csv            # the whole list
+python bouncer.py run acme inputs/leads.csv --domain-col "Company Website" --name-col "Account"
 ```
 
 - **Columns are auto-detected.** Bouncer looks for headers like `website`, `domain` and `url`, and `company` and `name`. Use the flags if it picks the wrong one.
@@ -105,7 +105,7 @@ Results are saved to `output/<list>_<client>_bouncer.csv`. Every original column
 
 | Column | Values |
 |---|---|
-| `icp_match` | `Y` (probability ≥ 0.8), `N` (≤ 0.3), `Review` (in between), `Unscanned` (no text to judge). `Error` only if Jev kept failing for that row; re-run to retry it. |
+| `icp_match` | `Y` (probability ≥ 0.7), `N` (≤ 0.3), `Review` (in between), `Unscanned` (no text to judge). `Error` only if Jev kept failing for that row; re-run to retry it. |
 | `icp_probability` | 0 to 1: Jev's probability that the company is a direct fit |
 
 ```csv
@@ -121,7 +121,7 @@ Maple Street Bakery,maplestreetbakery.example,Food & Beverage,8,Family-owned ...
 
 ```
 Done. 5 companies checked.
-  Y        (≥ 0.8)                       1
+  Y        (≥ 0.7)                       1
   Review   (in between)                  1
   N        (≤ 0.3)                       2
   Unscanned (no website text)            1
@@ -143,17 +143,27 @@ Send the `Review` rows to a person. Start outreach with the `Y` rows.
 
 The per-company figure comes from Jev's [listed price](https://openrouter.ai/typesafe/jev-1.13). The run summary reports the actual amount from each response's `usage.cost`. If the price changes, set `JEV_PRICE_PER_M` in `.env` so the pre-run estimate stays accurate.
 
-## Files
+## Project structure
 
 ```
-bouncer.py        CLI entry point (setup / run)
-setup_client.py   Client research and ICP drafting with Claude, plus the approval loop
-run_list.py       CSV in, Jev decisions, CSV out, caching, resume, summary
-jev.py            Small OpenRouter Decisions API client (retries, backoff)
-web.py            Website fetching and HTML-to-text, cached
-examples/         A 5-row made-up sample list
-clients/  cache/  output/   created at runtime, gitignored
+icp_gate/
+├── bouncer.py              Start here: the two commands (setup / run)
+├── src/                    The code
+│   ├── setup_client.py     Researches a client and drafts the ICP gate with Claude, then asks you to approve it
+│   ├── run_list.py         Reads your CSV, asks Jev about each company, writes the results CSV
+│   ├── jev.py              Talks to Jev on OpenRouter, with retries and backoff
+│   └── web.py              Fetches company websites and turns them into plain text
+├── inputs/                 Your lists and ICP docs (private)
+├── clients/                One approved gate.json per client (private, except example/)
+├── examples/               A 5-row made-up sample list
+├── output/                 Results CSVs (created on first run, private)
+├── cache/                  Saved websites and Jev answers, so re-runs are free (private)
+├── requirements.txt
+├── .env                    Your API keys (you create this; never committed)
+└── LICENSE
 ```
+
+Everything marked private is gitignored, so client names, ICPs, lists and results never reach GitHub.
 
 ## Tips
 

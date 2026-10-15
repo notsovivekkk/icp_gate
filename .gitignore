@@ -6,7 +6,16 @@
 # Bouncer working data (client ICPs, scraped sites, results)
 cache/
 output/
-clients/
+
+# Real client folders stay private. Only the README and the made-up example are
+# published, so the folder structure is visible on GitHub.
+clients/*
+!clients/README.md
+!clients/example/
+
+# Your prospect lists and ICP docs
+inputs/*
+!inputs/README.md
 
 # Python
 __pycache__/

@@ -9,11 +9,10 @@ import threading
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
-import jev
-import web
+from . import ROOT, jev, web
 
-DECISION_CACHE = Path("cache/decisions")
-OUTPUT_DIR = Path("output")
+DECISION_CACHE = ROOT / "cache" / "decisions"
+OUTPUT_DIR = ROOT / "output"
 CONFIRM_ABOVE_USD = 1.00
 
 DOMAIN_NAMES = ["website", "domain", "url", "companywebsite", "companydomain", "websiteurl",
@@ -181,11 +180,11 @@ def print_summary(rows, spent, calls, out_path, thresholds):
     if probs:
         print("  Average probability: %.2f" % (sum(probs) / len(probs)))
     print("  Jev cost this run: $%.5f (%d new calls; cached rows are free)" % (spent, calls))
-    print("  Saved: %s" % out_path)
+    print("  Saved: %s" % out_path.relative_to(ROOT))
 
 
 def load_gate(client):
-    path = Path("clients") / client / "gate.json"
+    path = ROOT / "clients" / client / "gate.json"
     if not path.exists():
         raise SystemExit("No gate for '%s'. Run first: python bouncer.py setup %s --site <domain>"
                          % (client, client))
